@@ -1,12 +1,21 @@
 import React, { Component } from "react";
+import axios from "axios";
 import "./App.css";
 import UserForm from "./components/UserForm";
 
 class App extends Component {
+  state = {
+    repos: null
+  };
   getUser = e => {
     e.preventDefault();
     const user = e.target.elements.username.value;
-    console.log(user);
+    if (user) {
+      axios.get(`https://api.github.com/users/${user}`).then(res => {
+        const repos = res.data.public_repos;
+        this.setState({ repos });
+      });
+    } else return;
   };
   render() {
     return (
@@ -15,6 +24,11 @@ class App extends Component {
           <h1 className="App-title">HTTP calls in React</h1>
         </header>
         <UserForm getUser={this.getUser} />
+        {this.state.repos ? (
+          <p>Number of repos: {this.state.repos}</p>
+        ) : (
+          <p>Please submit a valid username</p>
+        )}
       </div>
     );
   }
