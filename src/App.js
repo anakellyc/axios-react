@@ -5,7 +5,8 @@ import UserForm from "./components/UserForm";
 
 class App extends Component {
   state = {
-    repos: null
+    repos: null,
+    name: null
   };
   getUser = e => {
     e.preventDefault();
@@ -13,7 +14,8 @@ class App extends Component {
     if (user) {
       axios.get(`https://api.github.com/users/${user}`).then(res => {
         const repos = res.data.public_repos;
-        this.setState({ repos });
+        const name = res.data.name;
+        this.setState({ repos, name });
       });
     } else return;
   };
@@ -25,7 +27,10 @@ class App extends Component {
         </header>
         <UserForm getUser={this.getUser} />
         {this.state.repos ? (
-          <p>Number of repos: {this.state.repos}</p>
+          <div>
+            <p>Name: {this.state.name}</p>
+            <p>Number of repos: {this.state.repos}</p>
+          </div>
         ) : (
           <p>Please submit a valid username</p>
         )}
